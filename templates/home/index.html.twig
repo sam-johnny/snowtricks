@@ -12,21 +12,26 @@
 
     <div class="container mt-5">
         <h2 class="text-center mb-5">La liste des articles</h2>
-        <div class="d-flex justify-content-between">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for post in posts %}
-                <div class="card mt-4" style="width: 18rem;">
-                    <img src="" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <a href="">
+                <div class="col">
+                    <div class="card h-100">
+                        <img src="..." class="card-img-top" alt="snowtricks">
+                        <div class="card-body">
                             <h5 class="card-title">{{ post.title }}</h5>
-                        </a>
-                        <p class="text-muted fst-italic"></p>
-                        <p class="card-text">{{ post.content }}</p>
-                        <a href="{{ path('post.show') , {slug}-{id}" class="btn btn-primary">Voir plus</a>
+                            <a href=""></a>
+                            <p class="card-text">{{ post.content }}</p>
+                            <a href="{{ path('post.show', {id: post.id, slug: post.slug}) }}" class="btn btn-primary">Voir
+                                plus</a>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Last updated 3 mins ago</small>
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
+
     </div>
 
 {% endblock %}
