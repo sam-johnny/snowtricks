@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title "Création d'un article" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>Créer un article</h2>
+        {{ include('admin/post/_form.html.twig', {form: form, button: 'Créer'}) }}
+    </div>
+{% endblock %}
+
+
+
+
+
