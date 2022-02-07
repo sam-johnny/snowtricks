@@ -1,8 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{% endblock %}
+{% block title %} {{ post.title }} {% endblock %}
 
 {% block content %}
-<h1>{{ post.title }}</h1>
+    <div class="container">
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.content }}</p>
+
+        <hr>
+        <h2>Commentaire</h2>
+        <div class="">
+            {% include "comment/_form.html.twig" %}
+        </div>
+        <hr>
+        {% include "comment/_show.html.twig" %}
+    </div>
+
 
 {% endblock %}

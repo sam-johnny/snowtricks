@@ -19,8 +19,9 @@ class PostType extends AbstractType
             ->add('content', null, [
                 'label' => 'Contenu'
             ])
-            ->add('imageFile', FileType::class, [
-                'required' => false
+            ->add('imageFiles',FileType::class,[
+                'required' => false,
+                'multiple' => true
             ])
         ;
     }

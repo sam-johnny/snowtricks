@@ -7,15 +7,10 @@ use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-#[UniqueEntity("title")]
-#[Vich\Uploadable]
 class Post
 {
     #[ORM\Id]
@@ -34,22 +29,22 @@ class Post
     #[ORM\Column(type: 'datetime')]
     private \DateTime $created_at;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private ?string $imageName = null;
-
-    #[Vich\UploadableField(mapping: 'post_image', fileNameProperty: 'filename')]
-    private ?File $imageFile = null;
-
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $updated_at = null;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
 
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: Image::class, cascade: ['persist'], orphanRemoval: true)]
+    private $images;
+
+    private $imageFiles;
+
     public function __construct()
     {
         $this->created_at = new \DateTime();
         $this->comments = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -98,29 +93,6 @@ class Post
         return $this;
     }
 
-    public function setImageFile(?File $imageFile=null): void
-    {
-        $this->imageFile = $imageFile;
-        if ($this->imageFile instanceof UploadedFile) {
-            $this->updated_at = new \DateTime('now');
-        }
-    }
-
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    public function getImageName(): ?string
-    {
-        return $this->imageName;
-    }
-
-    public function setImageName($imageName): void
-    {
-        $this->imageName = $imageName;
-    }
-
     public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updated_at;
@@ -162,6 +134,60 @@ class Post
 
         return $this;
     }
+
+    /**
+     * @return Collection|Image[]
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+            $image->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getPost() === $this) {
+                $image->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageFiles(): mixed
+    {
+        return $this->imageFiles;
+    }
+
+    /**
+     * @param mixed $imageFiles
+     * @return Post
+     */
+    public function setImageFiles(mixed $imageFiles): self
+    {
+        foreach ($imageFiles as $imageFile) {
+            $image = new Image();
+            $image->setImageFile($imageFile);
+            $this->addImage($image);
+        }
+        $this->imageFiles = $imageFiles;
+        return $this;
+    }
+
 
 
 }

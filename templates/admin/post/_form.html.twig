@@ -1,4 +1,10 @@
 {{ form_start(form) }}
+{% for image in post.imageFiles %}
+    <div class="row">
+        <img src="{{ vich_uploader_asset(image, 'imageFile') | imagine_filter('my_thumb') }}" width="100" alt="">
+        <a href="{# {{ path('admin.image.delete'), {id: image.id} }}" class="btn btn-outline-danger" data-delete data-token="{{ csrf_token('delete' ~ image.id) }} #}">Supprimer</a>
+    </div>
+{% endfor %}
         {{ form_rest(form) }}
 <button class="btn btn-outline-dark">{{ button|default('Modifier') }}</button>
 {{ form_end(form) }}
