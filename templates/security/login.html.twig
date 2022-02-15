@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Se connecter{% endblock %}
+
+{% block content %}
+
+    {% include "_partials/_flashbag.html.twig" %}
+
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <h1 class="h3 mb-3 font-weight-normal">Se connecter</h1>
+        <label for="inputUsername">Username</label>
+        <input type="text" name="username" value="{{ last_username }}" id="inputUsername" class="form-control" required
+               autofocus>
+
+        <label for="inputPassword">Mot de passe</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password"
+               required>
+
+        <input type="hidden" name="_csrf_token"
+               value="{{ csrf_token('authenticate') }}"
+        >
+
+        <button class="btn btn-outline-dark" type="submit">
+            Se connecter
+        </button>
+    </form>
+    <a href="{{ path('forgot_password') }}" class="text-decoration-none">Mot de passe oublié ?</a>
+
+{% endblock %}

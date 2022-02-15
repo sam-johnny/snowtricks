@@ -20,8 +20,7 @@ class PostType extends AbstractType
                 'label' => 'Contenu'
             ])
             ->add('imageFiles',FileType::class,[
-                'required' => false,
-                'multiple' => true
+                'required' => false
             ])
         ;
     }

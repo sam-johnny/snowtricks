@@ -15,10 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
-    /**
-     * @Route("/post/{slug}-{id}", name="post.show", requirements={"slug": "[a-z0-9\-]*"})
-     */
-    public function show(Post $post, string $slug, Request $request, CommentService $commentService, CommentRepository $commentRepository): Response
+    #[Route('/article/{slug}-{id}', name: 'post.show', requirements: ['slug' => '[a-z0-9\-]*'])]
+    public function show(
+        Post                   $post,
+        string                 $slug,
+        Request                $request,
+        EntityManagerInterface $entityManager,
+        CommentRepository      $commentRepository
+    ): Response
     {
         $getSlug = $post->getSlug();
         if ($getSlug !== $slug) {
@@ -28,23 +32,25 @@ class PostController extends AbstractController
             ], 301);
         }
 
-        $comments = $commentRepository->findCommentaires($post);
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
-            $commentService->persistCommentaire($comment, $post);
+            $comment->setPost($post);
 
-            return $this->redirectToRoute('post.show', ['slug' => $post->getSlug(), 'id' => $post->getId()]);
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            $this->addFlash('success', 'Votre commentaire est bien envoyé');
+
+            return $this->redirectToRoute('post.show', ['id' => $post->getId(), 'slug' => $post->getSlug()]);
         }
-
         return $this->render('post/show.html.twig', [
             'current_menu' => 'home',
             'post' => $post,
             'form' => $form->createView(),
-            'comments' => $comments
+            'comments' => $commentRepository->findBy(['post' => $post])
         ]);
     }
 }

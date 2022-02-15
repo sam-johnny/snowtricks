@@ -26,11 +26,11 @@ class Post
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $content = null;
 
-    #[ORM\Column(type: 'datetime')]
-    private \DateTime $created_at;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private \DateTimeImmutable $created_at;
 
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $updated_at = null;
+    #[ORM\Column(type: 'datetime_immutable')]
+    private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class, orphanRemoval: true)]
     private $comments;
@@ -42,7 +42,7 @@ class Post
 
     public function __construct()
     {
-        $this->created_at = new \DateTime();
+        $this->created_at = new \DateTimeImmutable('now');
         $this->comments = new ArrayCollection();
         $this->images = new ArrayCollection();
     }
@@ -81,12 +81,12 @@ class Post
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    public function setCreatedAt($created_at): self
     {
         $this->created_at = $created_at;
 
@@ -98,7 +98,7 @@ class Post
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updated_at): self
+    public function setUpdatedAt($updated_at): self
     {
         $this->updated_at = $updated_at;
 
@@ -126,7 +126,6 @@ class Post
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getPost() === $this) {
                 $comment->setPost(null);
             }
@@ -143,6 +142,14 @@ class Post
         return $this->images;
     }
 
+    public function getPicture(): ?Image
+    {
+        if ($this->images->isEmpty()) {
+            return null;
+        }
+        return $this->images->first();
+    }
+
     public function addImage(Image $image): self
     {
         if (!$this->images->contains($image)) {
@@ -156,7 +163,6 @@ class Post
     public function removeImage(Image $image): self
     {
         if ($this->images->removeElement($image)) {
-            // set the owning side to null (unless already changed)
             if ($image->getPost() === $this) {
                 $image->setPost(null);
             }
@@ -165,19 +171,12 @@ class Post
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
     public function getImageFiles(): mixed
     {
         return $this->imageFiles;
     }
 
-    /**
-     * @param mixed $imageFiles
-     * @return Post
-     */
-    public function setImageFiles(mixed $imageFiles): self
+    public function setImageFiles($imageFiles): self
     {
         foreach ($imageFiles as $imageFile) {
             $image = new Image();
@@ -187,7 +186,5 @@ class Post
         $this->imageFiles = $imageFiles;
         return $this;
     }
-
-
 
 }

@@ -5,7 +5,6 @@ namespace App\Controller\admin;
 
 use App\Entity\Post;
 use App\Form\PostType;
-use App\Repository\ImageRepository;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -47,6 +46,7 @@ class AdminPostController extends AbstractController
         $post = new Post();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->persist($post);
             $this->entityManager->flush();
@@ -67,21 +67,21 @@ class AdminPostController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    public function edit(Post $post, Request $request, ImageRepository $imageRepository): Response
+    public function edit(
+        Post    $post,
+        Request $request
+    ): Response
     {
         $form = $this->createForm(PostType::class, $post);
-
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
             $this->addFlash('success', 'Bien modifié avec succès');
-            return $this->redirectToRoute('admin.post.index');
+            return $this->redirectToRoute('home');
         }
-
         return $this->render('admin/post/edit.html.twig', [
             'post' => $post,
-            'form' => $form->createView(),
-            'images' => $imageRepository
+            'form' => $form->createView()
         ]);
 
     }
@@ -92,14 +92,16 @@ class AdminPostController extends AbstractController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function delete(Post $post, Request $request): RedirectResponse
+    public function delete(
+        Post    $post,
+        Request $request): RedirectResponse
     {
         if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->get('_token'))) {
             $this->entityManager->remove($post);
             $this->entityManager->flush();
             $this->addFlash('success', 'Bien supprimé avec succès');
         }
-        return $this->redirectToRoute('admin.post.index');
+        return $this->redirectToRoute('home');
 
     }
 

@@ -6,12 +6,6 @@
     <div class="container mt-4">
         <h2>Gérer les articles</h2>
 
-        {% for message in app.flashes('success') %}
-        <div class="alert alert-success">
-            {{ message }}
-        </div>
-        {% endfor %}
-
         <div class="text-end mx-5">
             <a href="{{ path('admin.post.new') }}" class="btn btn-outline-dark">Créer un article</a>
         </div>
