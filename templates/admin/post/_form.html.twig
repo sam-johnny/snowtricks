@@ -2,7 +2,8 @@
     {{ form_rest(form) }}
         {% for image in post.images %}
             <div class="row">
-                <img src="{{ asset('images/posts/' ~ image.imageFilename) | imagine_filter('my_thumb') }}" width="100" alt="">
+                {#<img src="{{ asset('images/posts/' ~ image.imageFilename) | imagine_filter('my_thumb') }}" width="100" alt="">#}
+                <img src="{{ asset('images/posts/' ~ image) | imagine_filter('my_thumb') }}" width="100" alt="">
                 <a href="{# {{ path('admin.image.delete'), {id: image.id} }}" class="btn btn-outline-danger" data-delete data-token="{{ csrf_token('delete' ~ image.id) }} #}">Supprimer</a>
             </div>
         {% endfor %}

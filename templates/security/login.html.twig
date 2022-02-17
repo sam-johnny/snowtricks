@@ -1,33 +1,45 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Se connecter{% endblock %}
+{% block title %}Se connecter!{% endblock %}
 
 {% block content %}
+    <section class="container my-4 text-center">
+        {% include "_partials/_flashbag.html.twig" %}
 
-    {% include "_partials/_flashbag.html.twig" %}
+        <form method="post" class="my-4">
+            {% if error %}
+                <p class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+            {% endif %}
 
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+            <h1 class="h3 my-5 font-weight-normal">M'authentifier pour accéder à mon espace</h1>
+            <div class="row my-3 justify-content-center">
+                <div class="col-md-4 border border-dark p-4">
+                    <fieldset>
+                        <label for="inputUsername" class="my-3">Username</label>
+                        <input type="text" name="username" value="{{ last_username }}" id="inputUsername"
+                               class="form-control"
+                               required
+                               autofocus>
+                    </fieldset>
 
-        <h1 class="h3 mb-3 font-weight-normal">Se connecter</h1>
-        <label for="inputUsername">Username</label>
-        <input type="text" name="username" value="{{ last_username }}" id="inputUsername" class="form-control" required
-               autofocus>
+                    <fieldset class="mb-4">
+                        <label for="inputPassword" class="my-3">Mot de passe</label>
+                        <input type="password" name="password" id="inputPassword" class="form-control"
+                               autocomplete="current-password"
+                               required>
+                    </fieldset>
 
-        <label for="inputPassword">Mot de passe</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password"
-               required>
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+                    <a href="{{ path('forgot_password') }}">Mot de passe oublié ?</a>
+                    <br>
+                    <button class="btn btn-outline-dark my-4" type="submit">
+                        Se connecter
+                    </button>
+                </div>
+            </div>
 
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
-        >
-
-        <button class="btn btn-outline-dark" type="submit">
-            Se connecter
-        </button>
-    </form>
-    <a href="{{ path('forgot_password') }}" class="text-decoration-none">Mot de passe oublié ?</a>
-
+        </form>
+    </section>
 {% endblock %}

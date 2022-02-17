@@ -8,6 +8,7 @@ use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use App\Service\CommentService;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,8 @@ class PostController extends AbstractController
         string                 $slug,
         Request                $request,
         EntityManagerInterface $entityManager,
-        CommentRepository      $commentRepository
+        CommentRepository      $commentRepository,
+        PaginatorInterface     $paginator
     ): Response
     {
         $getSlug = $post->getSlug();
@@ -31,6 +33,12 @@ class PostController extends AbstractController
                 'id' => $post->getId()
             ], 301);
         }
+
+        $comments = $paginator->paginate(
+            $commentRepository->findBy(['post' => $post]),
+            $request->query->getInt('page', 1),
+            10
+        );
 
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
@@ -50,7 +58,7 @@ class PostController extends AbstractController
             'current_menu' => 'home',
             'post' => $post,
             'form' => $form->createView(),
-            'comments' => $commentRepository->findBy(['post' => $post])
+            'comments' => $comments
         ]);
     }
 }

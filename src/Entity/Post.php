@@ -40,6 +40,10 @@ class Post
 
     private $imageFiles;
 
+    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'post')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $categorie;
+
     public function __construct()
     {
         $this->created_at = new \DateTimeImmutable('now');
@@ -184,6 +188,18 @@ class Post
             $this->addImage($image);
         }
         $this->imageFiles = $imageFiles;
+        return $this;
+    }
+
+    public function getCategorie(): ?Categorie
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?Categorie $categorie): self
+    {
+        $this->categorie = $categorie;
+
         return $this;
     }
 

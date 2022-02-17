@@ -37,23 +37,31 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Snowtricks</a>
 
-            <!--Dropdown pour le role admin-->
             <div class="navbar-nav mb-2 mb-lg-0">
-                    <a class="nav-link {% if current_menu is defined and current_menu == 'home' %}active{% endif %}"
-                       href="{{ path('home') }}">Home</a>
-                    <a class="nav-link" href="{{ path('login') }}">Se connecter</a>
+                <a class="nav-link {% if current_menu is defined and current_menu == 'home' %}active{% endif %}"
+                   href="{{ path('home') }}">Home</a>
+                <a class="nav-link {% if current_menu is defined and current_menu == 'tricks' %}active{% endif %}"
+                   href="{{ path('home') }}">Tricks</a>
+
+
+                {% if app.user %}
                     <a class="nav-link" href="{{ path('logout') }}">Se déconnecter</a>
+                {% else %}
+                    <a class="nav-link {% if current_menu is defined and current_menu == 'login' %}active{% endif %}"
+                       href="{{ path('login') }}">Se connecter</a>
+                {% endif %}
             </div>
         </div>
     </nav>
 </header>
+
 
 {% block content %}{% endblock %}
 
 
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container">
-        <span class="text-muted">Place sticky footer content here.</span>
+        <span>Copyright &copy; 2022</span>
     </div>
 </footer>
 
