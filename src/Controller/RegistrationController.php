@@ -89,7 +89,7 @@ class RegistrationController extends AbstractController
 
     }
 
-    private function isNotRequestedInTime(\DateTime $accountMustBeVerifiedBefore): bool
+    private function isNotRequestedInTime(\DateTimeImmutable $accountMustBeVerifiedBefore): bool
     {
         return (new \DateTimeImmutable('now') > $accountMustBeVerifiedBefore);
     }

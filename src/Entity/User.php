@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -63,12 +65,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $forgotPasswordTokenVerified_at;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
+    private $comments;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, orphanRemoval: true)]
+    private $posts;
+
     public function __construct()
     {
         $this->registered_at = new \DateTimeImmutable('now');
         $this->isVerified = false;
         $this->roles = ['ROLE_USER'];
         $this->accountMustBeVerifiedBefore = (new \DateTimeImmutable('now'))->add(new \DateInterval("P1D"));
+        $this->comments = new ArrayCollection();
+        $this->posts = new ArrayCollection();
 
     }
 
@@ -268,6 +278,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setForgotPasswordTokenVerifiedAt($forgotPasswordTokenVerified_at): self
     {
         $this->forgotPasswordTokenVerified_at = $forgotPasswordTokenVerified_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Post[]
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getUser() === $this) {
+                $post->setUser(null);
+            }
+        }
 
         return $this;
     }

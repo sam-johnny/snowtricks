@@ -29,7 +29,7 @@ class Post
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $created_at;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class, orphanRemoval: true)]
@@ -43,6 +43,10 @@ class Post
     #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'post')]
     #[ORM\JoinColumn(nullable: false)]
     private $categorie;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $user;
 
     public function __construct()
     {
@@ -199,6 +203,18 @@ class Post
     public function setCategorie(?Categorie $categorie): self
     {
         $this->categorie = $categorie;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

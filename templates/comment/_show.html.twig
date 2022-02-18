@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <div class="card mb-3 bg-light">
             <div class="card-body">
-                <h5 class="card-title">pseudo</h5>
+                <h5 class="card-title">{{ comment.user.username }}</h5>
                 <p class="text-muted fst-italic">publié le {{ comment.createdAt|date('d-m-Y à H:i:s') }}</p>
                 <p>{{ comment.content }}</p>
             </div>

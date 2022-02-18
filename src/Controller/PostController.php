@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Post;
+use App\Entity\User;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
 use App\Service\CommentService;
@@ -23,7 +24,8 @@ class PostController extends AbstractController
         Request                $request,
         EntityManagerInterface $entityManager,
         CommentRepository      $commentRepository,
-        PaginatorInterface     $paginator
+        PaginatorInterface     $paginator,
+        User                   $user
     ): Response
     {
         $getSlug = $post->getSlug();
@@ -46,7 +48,9 @@ class PostController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
-            $comment->setPost($post);
+            $comment->setPost($post)
+                ->setUser($this->getUser());
+
 
             $entityManager->persist($comment);
             $entityManager->flush();
