@@ -2,17 +2,33 @@
 
 {% block title %}Register{% endblock %}
 
-{% block content %}
-    <div class="container mt-4">
-        <h1 class="my-4">S'enregistrer</h1>
+{% block body %}
+    <div class="container my-4 text-center">
+        <h2 class="h3 my-5 font-weight-normal">S'enregistrer</h2>
 
         {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.username) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.password) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+        <div class="row my-3 justify-content-center">
+            <div class="col-md-4 border border-dark p-4">
+                <div>
+                    {{ form_row(registrationForm.username) }}
+                </div>
 
-        <button type="submit" class="btn btn-outline-dark mt-4">Register</button>
+                <div>
+                    {{ form_row(registrationForm.email) }}
+                </div>
+
+                <div>
+                    {{ form_row(registrationForm.password) }}
+                </div>
+
+                <div>
+                    {{ form_row(registrationForm.agreeTerms) }}
+                </div>
+
+                <button type="submit" class="btn btn-outline-dark mt-4">S'enregistrer</button>
+            </div>
+        </div>
+
         {{ form_end(registrationForm) }}
     </div>
 {% endblock %}

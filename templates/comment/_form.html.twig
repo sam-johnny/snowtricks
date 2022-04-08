@@ -1,11 +1,14 @@
 {% for message in app.flashes('success') %}
-<div class="alert alert-success">
+    <div class="alert alert-success">
         {{ message }}
-</div>
+    </div>
 {% endfor %}
 
-<button class="btn btn-outline-dark">Laissez un commentaire</button>
 {{ form_start(form) }}
-        {{ form_rest(form) }}
-<button class="btn btn-outline-dark">{{ button|default('Envoyer') }}</button>
+<div class="d-flex mt-4 mb-4">
+        <img class="img-fluid img-responsive rounded-circle mr-2"
+             src="{{ asset('images/avatar.png') }}" width="38" alt="">
+        {{ form_widget(form.content) }}
+        <button class="btn btn-outline-dark">{{ button|default('Commenter') }}</button>
+</div>
 {{ form_end(form) }}

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LinkMedia index{% endblock %}
+
+{% block body %}
+    <h1>LinkMedia index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Url</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for link_media in link_media %}
+            <tr>
+                <td>{{ link_media.id }}</td>
+                <td>{{ link_media.url }}</td>
+                <td>
+                    <a href="{{ path('app_link_media_show', {'id': link_media.id}) }}">show</a>
+                    <a href="{{ path('app_link_media_edit', {'id': link_media.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_link_media_new') }}">Create new</a>
+{% endblock %}

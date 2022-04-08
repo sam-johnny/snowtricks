@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}LinkMedia{% endblock %}
+
+{% block body %}
+    <h1>LinkMedia</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ link_media.id }}</td>
+            </tr>
+            <tr>
+                <th>Url</th>
+                <td>{{ link_media.url }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_link_media_index') }}">back to list</a>
+
+    <a href="{{ path('app_link_media_edit', {'id': link_media.id}) }}">edit</a>
+
+    {{ include('link_media/_delete_form.html.twig') }}
+{% endblock %}

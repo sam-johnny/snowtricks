@@ -23,6 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[Assert\Length(min: 3, max: 255)]
     private ?string $username;
 
     #[ORM\Column(type: 'string', length: 180, unique: true)]

@@ -4,12 +4,10 @@ namespace App\Entity;
 
 use App\Repository\ImageRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
-#[UniqueEntity("title")]
 #[Vich\Uploadable]
 class Image
 {
@@ -38,11 +36,21 @@ class Image
         return $this->imageFilename;
     }
 
-    public function setImageFilename(string $imageFilename): self
+    public function setImageFilename(?string $imageFilename): self
     {
         $this->imageFilename = $imageFilename;
 
         return $this;
+    }
+
+    public function setImageFile(?File $imageFile=null): void
+    {
+        $this->imageFile = $imageFile;
+    }
+
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
     }
 
     public function getPost(): ?Post
@@ -57,13 +65,5 @@ class Image
         return $this;
     }
 
-    public function setImageFile(?File $imageFile=null): void
-    {
-        $this->imageFile = $imageFile;
-    }
-
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
 }
+

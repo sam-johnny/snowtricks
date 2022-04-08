@@ -4,10 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Entity\Post;
-use App\Entity\User;
 use App\Form\CommentType;
 use App\Repository\CommentRepository;
-use App\Service\CommentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,30 +15,42 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PostController extends AbstractController
 {
-    #[Route('/article/{slug}-{id}', name: 'post.show', requirements: ['slug' => '[a-z0-9\-]*'])]
+    private CommentRepository $commentRepository;
+    private PaginatorInterface $paginator;
+
+    public function __construct(
+        CommentRepository  $commentRepository,
+        PaginatorInterface $paginator
+    )
+    {
+        $this->commentRepository = $commentRepository;
+        $this->paginator = $paginator;
+    }
+
+
+    #[Route('/tricks/details/{slug}-{id}', name: 'tricks.show', requirements: ['slug' => '[a-z0-9\-]*'])]
     public function show(
         Post                   $post,
-        string                 $slug,
         Request                $request,
-        EntityManagerInterface $entityManager,
-        CommentRepository      $commentRepository,
-        PaginatorInterface     $paginator,
-        User                   $user
+        string                 $slug,
+        EntityManagerInterface $entityManager
     ): Response
     {
         $getSlug = $post->getSlug();
         if ($getSlug !== $slug) {
-            return $this->redirectToRoute('post.show', [
+            return $this->redirectToRoute('tricks.show', [
                 'slug' => $getSlug,
                 'id' => $post->getId()
             ], 301);
         }
 
-        $comments = $paginator->paginate(
-            $commentRepository->findBy(['post' => $post]),
+        $comments = $this->paginator->paginate(
+            $this->commentRepository->findBy(['post' => $post], ['created_at' => 'DESC']),
             $request->query->getInt('page', 1),
             10
         );
+
+        $commentsCount = count($this->commentRepository->findBy(['post' => $post], ['created_at' => 'DESC']));
 
         $comment = new Comment();
         $form = $this->createForm(CommentType::class, $comment);
@@ -51,18 +61,40 @@ class PostController extends AbstractController
             $comment->setPost($post)
                 ->setUser($this->getUser());
 
-
             $entityManager->persist($comment);
             $entityManager->flush();
             $this->addFlash('success', 'Votre commentaire est bien envoyé');
 
-            return $this->redirectToRoute('post.show', ['id' => $post->getId(), 'slug' => $post->getSlug()]);
+            return $this->redirectToRoute('tricks.show', ['id' => $post->getId(), 'slug' => $post->getSlug()]);
         }
+
         return $this->render('post/show.html.twig', [
-            'current_menu' => 'home',
+            'current_menu' => 'tricks',
             'post' => $post,
             'form' => $form->createView(),
+            'comments' => $comments,
+            'commentsCount' => $commentsCount
+        ]);
+    }
+
+    #[Route('/loadmoreComments/{id}', name: 'comment.loadmore')]
+    public function loadMoreComment
+    (
+        Post    $post,
+        Request $request
+
+    ): Response
+    {
+        $comments = $this->paginator->paginate(
+            $this->commentRepository->findBy(['post' => $post], ['created_at' => 'DESC']),
+            $request->query->getInt('page'),
+            10
+        );
+
+        return $this->render('comment/_loadMore.html.twig', [
             'comments' => $comments
         ]);
     }
+
+
 }

@@ -1,11 +1,22 @@
+{% for image in post.images %}
+
+    <div class="row flex justify-content-start flex-wrap">
+        <img src="{{ vich_uploader_asset(image) }}" width="100" alt="{{ post.title }}"
+             class="card-img-top my-4 mx-2 w-25">
+        <form method="post" action="{{ path('app_admin_image_delete', {id: image.id}) }}"
+              style="display: inline-block"
+              onsubmit="return confirm('Êtes vous sûr de vouloir supprimer cette image ?')">
+            <input type="hidden" name="_method" value="DELETE">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ image.id) }}">
+            <button class="btn btn-outline-danger">Supprimer</button>
+        </form>
+    </div>
+
+{% endfor %}
+
 {{ form_start(form) }}
+    {{ form_widget(form.imageBanner) }}
     {{ form_rest(form) }}
-        {% for image in post.images %}
-            <div class="row">
-                {#<img src="{{ asset('images/posts/' ~ image.imageFilename) | imagine_filter('my_thumb') }}" width="100" alt="">#}
-                <img src="{{ asset('images/posts/' ~ image) | imagine_filter('my_thumb') }}" width="100" alt="">
-                <a href="{# {{ path('admin.image.delete'), {id: image.id} }}" class="btn btn-outline-danger" data-delete data-token="{{ csrf_token('delete' ~ image.id) }} #}">Supprimer</a>
-            </div>
-        {% endfor %}
-        <button class="btn btn-outline-dark">{{ button|default('Modifier') }}</button>
+<button class="btn btn-outline-dark my-3">{{ button|default('Save') }}</button>
 {{ form_end(form) }}
+

@@ -7,10 +7,13 @@ use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
+#[Vich\Uploadable]
+#[UniqueEntity("title")]
 class Post
 {
     #[ORM\Id]
@@ -19,10 +22,12 @@ class Post
     private ?int $id = null;
 
     #[Assert\Length(min: 5, max: 255)]
+    #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $title = null;
 
     #[Assert\Length(min: 5, max: 255)]
+    #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $content = null;
 
@@ -48,11 +53,20 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: LinkMedia::class, cascade: ['persist'], orphanRemoval: true)]
+    private $links;
+
+    private $urls;
+
+    #[ORM\OneToOne(mappedBy: 'post', targetEntity: ImageBanner::class, cascade: ['persist', 'remove'])]
+    private $imageBanner;
+
     public function __construct()
     {
         $this->created_at = new \DateTimeImmutable('now');
         $this->comments = new ArrayCollection();
         $this->images = new ArrayCollection();
+        $this->links = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -150,14 +164,6 @@ class Post
         return $this->images;
     }
 
-    public function getPicture(): ?Image
-    {
-        if ($this->images->isEmpty()) {
-            return null;
-        }
-        return $this->images->first();
-    }
-
     public function addImage(Image $image): self
     {
         if (!$this->images->contains($image)) {
@@ -195,6 +201,7 @@ class Post
         return $this;
     }
 
+
     public function getCategorie(): ?Categorie
     {
         return $this->categorie;
@@ -219,4 +226,98 @@ class Post
         return $this;
     }
 
+    /**
+     * @return Collection|LinkMedia[]
+     */
+    public function getLinks(): Collection
+    {
+        return $this->links;
+    }
+
+    public function addLink(LinkMedia $link): self
+    {
+        if (!$this->links->contains($link)) {
+            $this->links[] = $link;
+            $link->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLink(LinkMedia $link): self
+    {
+        if ($this->links->removeElement($link)) {
+            // set the owning side to null (unless already changed)
+            if ($link->getPost() === $this) {
+                $link->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUrls(): mixed
+    {
+        return $this->urls;
+    }
+
+    public function setUrls($urls): self
+    {
+        $link = new LinkMedia();
+        $link->setUrl($urls);
+        $this->addLink($link);
+
+        $this->urls = $urls;
+        return $this;
+    }
+
+    public function getRegLinks(): array
+    {
+        $regex = "/=([\w-]*)/";
+        $regUrl = [];
+        foreach ($this->getLinks() as $linkArray) {
+            preg_match($regex, $linkArray->getUrl(), $matches);
+            $regUrl[] = $matches[1];
+        }
+        return $regUrl;
+    }
+
+    public function getImageBanner(): ?ImageBanner
+    {
+        return $this->imageBanner;
+    }
+
+    public function setImageBanner(ImageBanner $imageBanner): self
+    {
+        // set the owning side of the relation if necessary
+        if ($imageBanner->getPost() !== $this) {
+            $imageBanner->setPost($this);
+        }
+
+        $this->imageBanner = $imageBanner;
+
+        return $this;
+    }
+
+    public function getTest(): ?ImageBanner
+    {
+        return $this->test;
+    }
+
+    public function setTest(?ImageBanner $test): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($test === null && $this->test !== null) {
+            $this->test->setPossst(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($test !== null && $test->getPossst() !== $this) {
+            $test->setPossst($this);
+        }
+
+        $this->test = $test;
+
+        return $this;
+    }
 }

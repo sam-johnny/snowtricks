@@ -2,10 +2,14 @@
 
 {% block title "Création d'un article" %}
 
-{% block content %}
+{% block body %}
     <div class="container mt-4">
         <h2>Créer un article</h2>
-        {{ include('admin/post/_form.html.twig', {form: form, button: 'Créer'}) }}
+
+        <div class="my-5">
+            {{ include('admin/post/_form.html.twig', {form: form, button: 'Créer'}) }}
+        </div>
+
     </div>
 {% endblock %}
 

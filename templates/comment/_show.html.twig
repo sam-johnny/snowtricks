@@ -1,11 +1,12 @@
-{% for comment in comments %}
-    <div class="col-md-12">
-        <div class="card mb-3 bg-light">
-            <div class="card-body">
-                <h5 class="card-title">{{ comment.user.username }}</h5>
-                <p class="text-muted fst-italic">publié le {{ comment.createdAt|date('d-m-Y à H:i:s') }}</p>
-                <p>{{ comment.content }}</p>
-            </div>
-        </div>
+<div class="col-md-4 border">
+    <div class="d-flex mt-4">
+        <img class="img-fluid img-responsive rounded-circle mr-2"
+             src="{{ asset('images/avatar.png') }}" width="38">
+        <p class="text-muted fst-italic mx-3"><span class="fw-bolder text-dark">{{ comment.user.username }}</span> ::
+            le {{ comment.createdAt|date('d-m-Y à H:i:s') }}</p>
     </div>
-{% endfor %}
+
+    <div>
+        <p>{{ comment.content }}</p>
+    </div>
+</div>

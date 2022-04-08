@@ -2,7 +2,7 @@
 
 {% block title %}Se connecter!{% endblock %}
 
-{% block content %}
+{% block body %}
     <section class="container my-4 text-center">
         {% include "_partials/_flashbag.html.twig" %}
 
@@ -13,7 +13,7 @@
 
             <h1 class="h3 my-5 font-weight-normal">M'authentifier pour accéder à mon espace</h1>
             <div class="row my-3 justify-content-center">
-                <div class="col-md-4 border border-dark p-4">
+                <div class="col-md-3 border border-dark p-4">
                     <fieldset>
                         <label for="inputUsername" class="my-3">Username</label>
                         <input type="text" name="username" value="{{ last_username }}" id="inputUsername"

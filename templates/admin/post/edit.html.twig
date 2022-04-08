@@ -1,12 +1,113 @@
 {% extends 'base.html.twig' %}
 
-{% block title 'Edition article' %}
+{% block title %} {{ post.title }} {% endblock %}
 
-{% block content %}
+{% block body %}
 
-    <div class="container mt-4">
-        <h2>Modifier l'article</h2>
-        {{ include('admin/post/_form.html.twig', {form: form, button: 'Modifier'}) }}
+    {# Bannière #}
+    <div class="position-relative mb-4"
+
+            {# Bannière: image #}
+         style="height: 90vh; background-image: url('{% if post.imageBanner %} {{ vich_uploader_asset(post.imageBanner)|imagine_filter('my_ban') }} {% else %} {{ asset('images/header/snowboard.jpg') }} {% endif %}'); background-size: cover; background-position: center">
+        {# Admin: CRUD #}
+        <div class="position-absolute top-0 end-0 mx-4 my-4">
+
+            {% if app.user and post.imageBanner %}
+                <div class="border"
+                     style="backdrop-filter: brightness(80%)">
+                    {{ include('admin/post/_buttonAdminImageBanner.html.twig') }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        {# Bannière: titre #}
+        <div class="position-absolute top-50 start-50 translate-middle col-sm-5 border text-center"
+             style="backdrop-filter: brightness(80%)">
+            <h1 class="text-white">{{ post.title }}</h1>
+        </div>
+
+    </div>
+
+    {# Message de confirmation #}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success my-4">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {# Media #}
+    {# <div class="my-4 text-center" id="mediaButton">
+        <button class="btn btn-outline-dark">Voir média</button>
+    </div> #}
+    {# Media: Image #}
+    <div id="media" class="row mx-0 my-4" {# style="display: none" #}>
+
+        {% for image in post.images %}
+            <div class="col-3 d-flex flex-column justify-content-center">
+                <img src="{{ vich_uploader_asset(image)|imagine_filter('my_thumb') }}" class="my-2 mx-2 img-fluid"
+                     alt="{{ post.title }}"
+                     height="auto">
+                {% if app.user %}
+                    {{ include('admin/post/_buttonAdminImage.html.twig') }}
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        {% for link in post.regLinks %}
+            <div class="col-3 pt-2">
+                <iframe width="100%" height="88%" src="https://www.youtube.com/embed/{{ link }}"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="container my-3">
+
+        {# Information sur l'article #}
+        <div class="d-flex justify-content-center font-weight-light mb-3">
+
+            {# Date de création #}
+            <small class="border border-dark px-2 bg-secondary text-light">Crée
+                le: {{ post.createdAt|date('d-m-Y à H:i:s') }}</small>
+            {# Catégorie #}
+            <small class="border border-dark px-2 mx-2 bg-secondary text-light">Catégorie: {{ post.categorie.name }}</small>
+            {# Date de modification #}
+            {% if post.updatedAt is not null %}
+                <small class="border border-dark px-2 bg-secondary text-light">Modifié
+                    le: {{ post.createdAt|date('d-m-Y à H:i:s') }}</small>
+            {% endif %}
+
+        </div>
+
+        {{ form_start(form) }}
+
+        {% if post.imageBanner %}
+            {{ form_widget(form.imageBanner, {'attr': {'style': "display: none"}}) }}
+        {% else %}
+            <hr>
+            {{ form_widget(form.imageBanner) }}
+            <hr>
+        {% endif %}
+        {{ form_row(form.title) }}
+        {{ form_row(form.content) }}
+        {{ form_row(form.categorie) }}
+        <hr>
+        {{ form_row(form.imageFiles) }}
+        <hr>
+        {{ form_row(form.urls) }}
+        <hr>
+
+        {{ form_rest(form) }}
+        <div class="text-end">
+            <button type="submit" class="btn btn-outline-dark me-2">{{ button_label|default('Modifier') }}</button>
+            {{ include('admin/post/_delete_form.html.twig') }}
+        </div>
+        {{ form_end(form) }}
+
     </div>
 
 {% endblock %}
