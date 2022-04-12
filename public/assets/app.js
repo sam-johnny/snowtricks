@@ -1,3 +1,4 @@
+/* Bouton loadMore commentaire */
 function loadMoreComments() {
     var postId = document.getElementById("comments").dataset.post;
     var offsetPaginator = parseInt(document.getElementById("comments").dataset.offset) + 1;
@@ -10,6 +11,7 @@ function loadMoreComments() {
     xhttp.send();
 }
 
+/* Bouton media */
 let button = document.getElementById("mediaButton");
 let divMedia = document.getElementById("media");
 button.addEventListener("click", () => {
@@ -21,6 +23,7 @@ button.addEventListener("click", () => {
     }
 })
 
+/* Bouton loadMore Post */
 function loadMorePosts() {
     var offsetPaginator = parseInt(document.getElementById("posts").dataset.offset) + 1;
     const xhttp = new XMLHttpRequest();

@@ -11,14 +11,15 @@ class LinkMedia
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $url;
+    private ?string $url;
 
-    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'links')]
+    #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'linkMedia')]
     #[ORM\JoinColumn(nullable: false)]
     private $post;
+
 
     public function getId(): ?int
     {
@@ -48,4 +49,12 @@ class LinkMedia
 
         return $this;
     }
+
+    public function getRegLink(): string
+    {
+        $regex = "/=([\w-]*)/";
+            preg_match($regex, $this->getUrl(), $matches);
+            return $matches[1];
+    }
+
 }

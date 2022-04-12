@@ -49,17 +49,24 @@
                      alt="{{ post.title }}"
                      height="auto">
                 {% if app.user %}
-                    {{ include('admin/post/_buttonAdminImage.html.twig') }}
+                    <div class="text-center">
+                        {{ include('admin/post/_buttonAdminImage.html.twig') }}
+                    </div>
                 {% endif %}
             </div>
         {% endfor %}
 
-        {% for link in post.regLinks %}
-            <div class="col-3 pt-2">
-                <iframe width="100%" height="88%" src="https://www.youtube.com/embed/{{ link }}"
+        {% for link in post.linkMedia %}
+            <div class="col-3 py-2 d-flex flex-column justify-content-center">
+                <iframe width="100%" height="88%" src="https://www.youtube.com/embed/{{ link.regLink }}"
                         title="YouTube video player" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowfullscreen></iframe>
+                {% if app.user %}
+                    <div class="text-center">
+                        {{ include('admin/post/_buttonAdminLinkMedia.html.twig') }}
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
 
@@ -83,30 +90,9 @@
 
         </div>
 
-        {{ form_start(form) }}
-
-        {% if post.imageBanner %}
-            {{ form_widget(form.imageBanner, {'attr': {'style': "display: none"}}) }}
-        {% else %}
-            <hr>
-            {{ form_widget(form.imageBanner) }}
-            <hr>
-        {% endif %}
-        {{ form_row(form.title) }}
-        {{ form_row(form.content) }}
-        {{ form_row(form.categorie) }}
-        <hr>
-        {{ form_row(form.imageFiles) }}
-        <hr>
-        {{ form_row(form.urls) }}
-        <hr>
-
-        {{ form_rest(form) }}
-        <div class="text-end">
-            <button type="submit" class="btn btn-outline-dark me-2">{{ button_label|default('Modifier') }}</button>
-            {{ include('admin/post/_delete_form.html.twig') }}
+        <div class="my-5">
+            {{ include('admin/post/_form.html.twig', {'button_label': 'Modifer'}) }}
         </div>
-        {{ form_end(form) }}
 
     </div>
 

@@ -5,7 +5,6 @@
 {% block body %}
     <h1>Create new Categorie</h1>
 
-    {{ include('admin/categorie/_form.html.twig') }}
+    {{ include('admin/categorie/_form.html.twig', {'button_label': 'Créer'}) }}
 
-    <a href="{{ path('home') }}">back to list</a>
 {% endblock %}

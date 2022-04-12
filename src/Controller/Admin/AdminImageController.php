@@ -40,7 +40,7 @@ class AdminImageController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_admin_image_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_admin_image_delete', methods: ['DELETE'])]
     public function delete(Request $request, Image $image, EntityManagerInterface $entityManager): Response
     {
         $postId = $image->getPost()->getId();

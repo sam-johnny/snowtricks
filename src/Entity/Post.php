@@ -53,13 +53,14 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     private $user;
 
-    #[ORM\OneToMany(mappedBy: 'post', targetEntity: LinkMedia::class, cascade: ['persist'], orphanRemoval: true)]
-    private $links;
-
-    private $urls;
 
     #[ORM\OneToOne(mappedBy: 'post', targetEntity: ImageBanner::class, cascade: ['persist', 'remove'])]
     private $imageBanner;
+
+    #[ORM\OneToMany(mappedBy: 'post', targetEntity: LinkMedia::class, cascade: ['persist'], orphanRemoval: true)]
+    private $linkMedia;
+
+    private $urls;
 
     public function __construct()
     {
@@ -67,6 +68,7 @@ class Post
         $this->comments = new ArrayCollection();
         $this->images = new ArrayCollection();
         $this->links = new ArrayCollection();
+        $this->linkMedia = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -226,62 +228,6 @@ class Post
         return $this;
     }
 
-    /**
-     * @return Collection|LinkMedia[]
-     */
-    public function getLinks(): Collection
-    {
-        return $this->links;
-    }
-
-    public function addLink(LinkMedia $link): self
-    {
-        if (!$this->links->contains($link)) {
-            $this->links[] = $link;
-            $link->setPost($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLink(LinkMedia $link): self
-    {
-        if ($this->links->removeElement($link)) {
-            // set the owning side to null (unless already changed)
-            if ($link->getPost() === $this) {
-                $link->setPost(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getUrls(): mixed
-    {
-        return $this->urls;
-    }
-
-    public function setUrls($urls): self
-    {
-        $link = new LinkMedia();
-        $link->setUrl($urls);
-        $this->addLink($link);
-
-        $this->urls = $urls;
-        return $this;
-    }
-
-    public function getRegLinks(): array
-    {
-        $regex = "/=([\w-]*)/";
-        $regUrl = [];
-        foreach ($this->getLinks() as $linkArray) {
-            preg_match($regex, $linkArray->getUrl(), $matches);
-            $regUrl[] = $matches[1];
-        }
-        return $regUrl;
-    }
-
     public function getImageBanner(): ?ImageBanner
     {
         return $this->imageBanner;
@@ -299,25 +245,59 @@ class Post
         return $this;
     }
 
-    public function getTest(): ?ImageBanner
+    /**
+     * @return Collection|LinkMedia[]
+     */
+    public function getLinkMedia(): Collection
     {
-        return $this->test;
+        return $this->linkMedia;
     }
 
-    public function setTest(?ImageBanner $test): self
+    public function addLinkMedia(LinkMedia $linkMedia): self
     {
-        // unset the owning side of the relation if necessary
-        if ($test === null && $this->test !== null) {
-            $this->test->setPossst(null);
+        if (!$this->linkMedia->contains($linkMedia)) {
+            $this->linkMedia[] = $linkMedia;
+            $linkMedia->setPost($this);
         }
-
-        // set the owning side of the relation if necessary
-        if ($test !== null && $test->getPossst() !== $this) {
-            $test->setPossst($this);
-        }
-
-        $this->test = $test;
 
         return $this;
+    }
+
+    public function removeLinkMedia(LinkMedia $linkMedia): self
+    {
+        if ($this->linkMedia->removeElement($linkMedia)) {
+            // set the owning side to null (unless already changed)
+            if ($linkMedia->getPost() === $this) {
+                $linkMedia->setPost(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUrls(): mixed
+    {
+        return $this->urls;
+    }
+
+    public function setUrls($urls): self
+    {
+        $link = new LinkMedia();
+        $link->setUrl($urls);
+        $this->addLinkMedia($link);
+
+        $this->urls = $urls;
+        return $this;
+    }
+
+    public function getRegLinks(): array
+    {
+        $regex = "/=([\w-]*)/";
+        $regUrl = [];
+        foreach ($this->getLinkMedia() as $linkArray) {
+            preg_match($regex, $linkArray->getUrl(), $matches);
+            $regUrl[] = $matches[1];
+        }
+        return $regUrl;
     }
 }

@@ -3,7 +3,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\ImageBanner;
 use App\Entity\Post;
 use App\Form\PostType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,16 +24,16 @@ class AdminPostController extends AbstractController
     }
 
     #[Route('/new', name: 'app_admin_post_new')]
-    public function new(Request $request): Response
+    public function new(
+        Request $request
+    ): Response
     {
         $post = new Post();
-        $imageBanner = new ImageBanner();
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $post->setUser($this->getUser());
-            $imageBanner->setCreatedAt(new \DateTimeImmutable('now'));
 
             $this->entityManager->persist($post);
             $this->entityManager->flush();
@@ -58,11 +57,11 @@ class AdminPostController extends AbstractController
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setUpdatedAt(new \DateTimeImmutable('now'));
             $this->entityManager->flush();
             $this->addFlash('success', 'L\'article a bien été modifié avec succès');
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('tricks.show', ['slug' => $post->getSlug(), 'id' => $post->getId()]);
         }
         return $this->render('admin/post/edit.html.twig', [
             'post' => $post,
@@ -75,7 +74,8 @@ class AdminPostController extends AbstractController
     #[Route('/{id}', name: 'app_admin_post_delete', methods: 'POST')]
     public function delete(
         Post    $post,
-        Request $request): RedirectResponse
+        Request $request
+    ): RedirectResponse
     {
         if ($this->isCsrfTokenValid('delete' . $post->getId(), $request->get('_token'))) {
             $this->entityManager->remove($post);

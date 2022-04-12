@@ -29,25 +29,22 @@
 
     </div>
 
-    {# {% if post.imageBanner %}
-        {{ vich_uploader_asset(post.imageBanner)|imagine_filter('my_ban') }}
-        {% else %}
-        {{ asset('images/header/snowboard.jpg') }}
-    {% endif %} #}
-
     {# Message de confirmation #}
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success my-4">
-            {{ message }}
-        </div>
-    {% endfor %}
+    <div class="container">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success my-4">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
 
     {# Media #}
-    {# <div class="my-4 text-center" id="mediaButton">
+    {#<div class="my-4 text-center" id="mediaButton">
         <button class="btn btn-outline-dark">Voir média</button>
-    </div> #}
+    </div>#}
     {# Media: Image #}
-    <div id="media" class="row mx-0" {# style="display: none" #}>
+    <div id="media" class="row mx-0" {#style="display: none"#}>
 
         {% for image in post.images %}
             <div class="col-3 d-flex flex-column justify-content-center">
@@ -79,6 +76,10 @@
             {# Date de création #}
             <small class="border border-dark px-2 bg-secondary text-light">Crée
                 le: {{ post.createdAt|date('d-m-Y à H:i:s') }}</small>
+            {# Utilisateur #}
+            <small class="border border-dark px-2 mx-2 bg-secondary text-light">Posté
+                par: {{ post.user.userIdentifier }}
+            </small>
             {# Catégorie #}
             <small class="border border-dark px-2 mx-2 bg-secondary text-light">Groupe: {{ post.categorie.name }}</small>
             {# Date de modification #}
