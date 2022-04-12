@@ -27,8 +27,4 @@ Création d'un site communautaire de partage de figures de snowboard via le fram
 ```
     php bin/console doctrine:migrations:migrate
 ```
-6. (Optionnel) Installer les fixtures pour avoir une démo de données fictives :
-```
-    php bin/console doctrine:fixtures:load
-```
-7. Félications le projet est installé correctement, vous pouvez désormais commencer à l'utiliser à votre guise !
+6. Félications le projet est installé correctement, vous pouvez désormais commencer à l'utiliser à votre guise !
