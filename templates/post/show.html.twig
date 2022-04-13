@@ -40,11 +40,11 @@
 
 
     {# Media #}
-    {#<div class="my-4 text-center" id="mediaButton">
-        <button class="btn btn-outline-dark">Voir média</button>
-    </div>#}
+    <div class="my-2 text-center" id="mediaButton">
+        <button class="btn btn-outline-dark" >Voir média</button>
+    </div>
     {# Media: Image #}
-    <div id="media" class="row mx-0" {#style="display: none"#}>
+    <div id="media" class="row mx-0">
 
         {% for image in post.images %}
             <div class="col-3 d-flex flex-column justify-content-center">
@@ -68,24 +68,20 @@
     <div class="container text-center">
 
         {# Contenu #}
-        <p>{{ post.content }}</p>
+        <p class="my-5">{{ post.content }}</p>
 
         {# Information sur l'article #}
-        <div class="d-flex justify-content-center font-weight-light">
 
-            {# Date de création #}
-            <small class="border border-dark px-2 bg-secondary text-light">Crée
-                le: {{ post.createdAt|date('d-m-Y à H:i:s') }}</small>
+        <div class="d-flex justify-content-evenly font-weight-light">
             {# Utilisateur #}
-            <small class="border border-dark px-2 mx-2 bg-secondary text-light">Posté
-                par: {{ post.user.userIdentifier }}
-            </small>
+            <small class="border border-dark px-4 bg-secondary text-light">Auteur: <br><i>{{ post.user.userIdentifier }}</i></small>
+            {# Date de création #}
+            <small class="border border-dark px-4 bg-secondary text-light">Crée le: <br><i>{{ post.createdAt|date('d-m-Y') }}</i></small>
             {# Catégorie #}
-            <small class="border border-dark px-2 mx-2 bg-secondary text-light">Groupe: {{ post.categorie.name }}</small>
+            <small class="border border-dark px-4 bg-secondary text-light">Groupe: <br><i>{{ post.categorie.name }}</i></small>
             {# Date de modification #}
             {% if post.updatedAt is not null %}
-                <small class="border border-dark px-2 bg-secondary text-light">Modifié
-                    le: {{ post.createdAt|date('d-m-Y à H:i:s') }}</small>
+                <small class="border border-dark px-4 bg-secondary text-light">Modifiée le: <br>{{ post.createdAt|date('d-m-Y') }}</i></small>
             {% endif %}
 
         </div>

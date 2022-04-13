@@ -47,7 +47,7 @@ class AdminPostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_admin_post_edit', methods: 'GET|POST')]
+    #[Route('/{id}/edit', name: 'app_admin_post_edit', methods: ['GET', 'POST'])]
     public function edit(
         Post    $post,
         Request $request
@@ -71,7 +71,7 @@ class AdminPostController extends AbstractController
 
     }
 
-    #[Route('/{id}', name: 'app_admin_post_delete', methods: 'POST')]
+    #[Route('/{id}', name: 'app_admin_post_delete', methods: ['POST'])]
     public function delete(
         Post    $post,
         Request $request

@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Image;
-use App\Entity\Post;
 use App\Form\ImageType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
