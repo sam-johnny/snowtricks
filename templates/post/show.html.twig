@@ -44,18 +44,18 @@
         <button class="btn btn-outline-dark" >Voir média</button>
     </div>
     {# Media: Image #}
-    <div id="media" class="row mx-0">
+    <div id="media" class="row mx-auto">
 
         {% for image in post.images %}
-            <div class="col-3 d-flex flex-column justify-content-center">
-                <img src="{{ vich_uploader_asset(image)|imagine_filter('my_thumb') }}" class="my-2 mx-2 img-fluid"
+            <div class="col d-flex flex-column">
+                <img src="{{ vich_uploader_asset(image)|imagine_filter('my_thumb') }}" class="my-2 mx-2 img-fluid justify-content-center"
                      alt="{{ post.title }}"
                      height="auto">
             </div>
         {% endfor %}
 
         {% for link in post.regLinks %}
-            <div class="col-3 pt-2">
+            <div class="col pt-2">
                 <iframe width="100%" height="88%" src="https://www.youtube.com/embed/{{ link }}"
                         title="YouTube video player" frameborder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
