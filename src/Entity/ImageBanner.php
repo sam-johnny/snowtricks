@@ -22,7 +22,7 @@ class ImageBanner
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $imageFilename = null;
 
-    #[ORM\OneToOne(inversedBy: 'imageBanner', targetEntity: Post::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'imageBanner', targetEntity: Post::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Post $post = null;
 

@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\LinkMedia;
 use App\Form\LinkMediaType;
+use App\Helper\LinkMediaIdHelper;
+use App\Helper\LinkMediaUrlHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,13 +19,12 @@ class AdminLinkMediaController extends AbstractController
     public function edit(
         Request                $request,
         LinkMedia              $linkMedia,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        LinkMediaUrlHelper     $linkMediaUrlHelper
     ): Response
     {
-        $postId = $linkMedia->getPost()->getId();
-        $postSlug = $linkMedia->getPost()->getSlug();
-
-        $linkMedia->getRegLink();
+        $postId = $linkMediaUrlHelper->idHelper($linkMedia);
+        $postSlug = $linkMediaUrlHelper->slugHelper($linkMedia);
 
         $form = $this->createForm(LinkMediaType::class, $linkMedia);
         $form->handleRequest($request);
@@ -42,13 +43,14 @@ class AdminLinkMediaController extends AbstractController
 
     #[Route('/{id}', name: 'app_link_media_delete', methods: ['DELETE'])]
     public function delete(
-        Request             $request,
-        LinkMedia           $linkMedia,
+        Request                $request,
+        LinkMedia              $linkMedia,
+        LinkMediaUrlHelper     $linkMediaUrlHelper,
         EntityManagerInterface $entityManager
     ): Response
     {
-        $postId = $linkMedia->getPost()->getId();
-        $postSlug = $linkMedia->getPost()->getSlug();
+        $postId = $linkMediaUrlHelper->idHelper($linkMedia);
+        $postSlug = $linkMediaUrlHelper->slugHelper($linkMedia);
 
         if ($this->isCsrfTokenValid('delete' . $linkMedia->getId(), $request->request->get('_token'))) {
             $entityManager->remove($linkMedia);
