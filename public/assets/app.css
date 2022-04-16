@@ -1,0 +1,27 @@
+@media all and (max-width: 1024px)
+{
+    #media, #navbar-top
+    {
+        display: none;
+    }
+
+    #mediaButton
+    {
+        display: block;
+    }
+
+    #media
+    {
+        display: none;
+    }
+}
+
+@media all and (min-width: 1024px)
+{
+
+    #mediaButton, #navbar-bottom
+    {
+        display: none;
+    }
+}
+
