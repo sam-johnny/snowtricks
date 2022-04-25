@@ -27,7 +27,7 @@
 
             <div class="navbar-nav mb-2 mb-lg-0">
                 <a class="nav-link {% if current_menu is defined and current_menu == 'home' %}active{% endif %}"
-                   href="{{ path('home') }}"><i class="fa-solid fa-house-chimney"></i> Home</a>
+                   href="{{ path('app.home') }}"><i class="fa-solid fa-house-chimney"></i> Home</a>
 
                 <a class="nav-link {% if current_menu is defined and current_menu == 'tricks' %}active{% endif %}"
                    href="#tricks"><i class="fa-solid fa-list"></i> Tricks</a>
@@ -60,7 +60,7 @@
     <nav id="navbar-bottom" class="navbar fixed-bottom navbar-dark bg-black">
         <div class="container-fluid">
             <a class="nav-link {% if current_menu is defined and current_menu == 'home' %}active{% endif %}"
-               href="{{ path('home') }}"><i class="fa-solid fa-house-chimney"></i></a>
+               href="{{ path('app.home') }}"><i class="fa-solid fa-house-chimney"></i></a>
 
             <a class="nav-link {% if current_menu is defined and current_menu == 'tricks' %}active{% endif %}"
                href="#tricks"><i class="fa-solid fa-list"></i></a>

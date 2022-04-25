@@ -132,7 +132,7 @@ class ForgotPasswordController extends AbstractController
 
             $this->addFlash('success', 'Votre mot de passe a été modifié, vous pouvez à présent vous connecter.');
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('app.home');
         }
 
         return $this->render('forgot_password/forgot_password_step_2.html.twig', [

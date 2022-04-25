@@ -29,3 +29,11 @@ services:
     arguments:
       $senderEmail: '%app.sender_email%'
       $senderName: '%app.sender_name%'
+
+  App\EventListener\PostListener:
+    tags:
+      - { name: doctrine.event_listener, event: prePersist }
+
+  App\EventListener\CommentListener:
+    tags:
+      - { name: doctrine.event_listener, event: prePersist }

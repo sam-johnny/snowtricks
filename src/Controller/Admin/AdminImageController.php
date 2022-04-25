@@ -4,8 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Image;
 use App\Form\ImageType;
-use App\Helper\ImageIdHelper;
-use App\Helper\ImageSlugHelper;
 use App\Helper\ImageUrlHelper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

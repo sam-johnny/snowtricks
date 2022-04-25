@@ -33,8 +33,6 @@ class AdminPostController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $post->setUser($this->getUser());
-
             $this->entityManager->persist($post);
             $this->entityManager->flush();
             $this->addFlash('success', 'Bien créé avec succès');
@@ -53,10 +51,8 @@ class AdminPostController extends AbstractController
         Request $request
     ): Response
     {
-
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
-
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
@@ -82,7 +78,7 @@ class AdminPostController extends AbstractController
             $this->entityManager->flush();
             $this->addFlash('success', 'L\'article a bien été supprimé avec succès');
         }
-        return $this->redirectToRoute('home');
+        return $this->redirectToRoute('app.home');
 
     }
 

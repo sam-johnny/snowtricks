@@ -36,6 +36,7 @@ class PostController extends AbstractController
         EntityManagerInterface $entityManager
     ): Response
     {
+
         $getSlug = $post->getSlug();
         if ($getSlug !== $slug) {
             return $this->redirectToRoute('tricks.show', [
@@ -58,8 +59,7 @@ class PostController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $comment = $form->getData();
-            $comment->setPost($post)
-                ->setUser($this->getUser());
+            $comment->setPost($post);
 
             $entityManager->persist($comment);
             $entityManager->flush();
