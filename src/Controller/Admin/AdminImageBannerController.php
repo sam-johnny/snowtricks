@@ -28,7 +28,6 @@ class AdminImageBannerController extends AbstractController
         $form = $this->createForm(ImageBannerType::class, $imageBanner);
         $form->handleRequest($request);
 
-        $imageBanner->getPost()->getImageBanner();
         if ($form->isSubmitted() && $form->isValid()) {
             $imageBanner->setImageFilename($imageBanner->getImageFile());
             $entityManager->flush();

@@ -23,7 +23,7 @@ class HomeController extends AbstractController
         $this->paginator = $paginator;
     }
 
-    #[Route('/', name: 'home')]
+    #[Route('/', name: 'app.home')]
     public function index(
         Request $request
     ): Response

@@ -24,7 +24,7 @@ class AdminCategorieController extends AbstractController
             $entityManager->persist($categorie);
             $entityManager->flush();
             $this->addFlash('success', 'Bien créé avec succès');
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('app.home');
         }
 
         return $this->renderForm('admin/categorie/new.html.twig', [

@@ -6,12 +6,20 @@ use App\Entity\Image;
 
  class ImageUrlHelper
 {
-    public function idHelper(Image $image): ?int
+     /**
+      * @param Image $image
+      * @return int|null
+      */
+     public function idHelper(Image $image): ?int
     {
         return $image->getPost()->getId();
     }
 
-    public function slugHelper(Image $image): string
+     /**
+      * @param Image $image
+      * @return string|null
+      */
+     public function slugHelper(Image $image): ?string
     {
         return $image->getPost()->getSlug();
     }
