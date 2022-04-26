@@ -21,14 +21,14 @@ class Post
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[Assert\Length(min: 5, max: 255)]
+    #[Assert\Length(min: 3, max: 255)]
     #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $title = null;
 
-    #[Assert\Length(min: 5, max: 255)]
+    #[Assert\Length(min: 5)]
     #[Assert\NotBlank]
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'text')]
     private ?string $content = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
