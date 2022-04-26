@@ -14,7 +14,7 @@ use Doctrine\ORM\Event\LifecycleEventArgs;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 
-class PostListener
+class PostPrePersistListener
 {
     protected TokenStorageInterface $storage;
 

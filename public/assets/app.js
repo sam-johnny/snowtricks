@@ -12,7 +12,7 @@ function loadMoreComments() {
 }
 
 /* Bouton media */
-let button = document.getElementById("mediaButton");
+let button = document.getElementById("media-button");
 let divMedia = document.getElementById("media");
 button.addEventListener("click", () => {
     if (getComputedStyle(divMedia).display !== "none") {

@@ -40,7 +40,7 @@
 
 
     {# Media #}
-    <div class="my-2 text-center" id="mediaButton">
+    <div class="my-2 text-center" id="media-button">
         <button class="btn btn-outline-dark" >Voir média</button>
     </div>
     {# Media: Image #}
@@ -72,7 +72,7 @@
 
         {# Information sur l'article #}
 
-        <div class="d-flex justify-content-evenly font-weight-light">
+        <div id="info-article" class="d-flex justify-content-evenly font-weight-light">
             {# Utilisateur #}
             <small class="border border-dark px-4 bg-secondary text-light">Auteur: <br><i>{{ post.user.userIdentifier }}</i></small>
             {# Date de création #}
@@ -81,11 +81,10 @@
             <small class="border border-dark px-4 bg-secondary text-light">Groupe: <br><i>{{ post.categorie.name }}</i></small>
             {# Date de modification #}
             {% if post.updatedAt is not null %}
-                <small class="border border-dark px-4 bg-secondary text-light">Modifiée le: <br>{{ post.createdAt|date('d-m-Y') }}</i></small>
+                <small class="border border-dark px-4 bg-secondary text-light">Modifiée le: <br>{{ post.updatedAt|date('d-m-Y') }}</i></small>
             {% endif %}
 
         </div>
-
         <hr>
 
         <h2>{{ commentsCount }} Commentaire{% if commentsCount > 1 %}s{% endif %}</h2>
