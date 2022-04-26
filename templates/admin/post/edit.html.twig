@@ -85,13 +85,13 @@
             {# Date de modification #}
             {% if post.updatedAt is not null %}
                 <small class="border border-dark px-2 bg-secondary text-light">Modifié
-                    le: {{ post.createdAt|date('d-m-Y à H:i:s') }}</small>
+                    le: {{ post.updatedAt|date('d-m-Y à H:i:s') }}</small>
             {% endif %}
 
         </div>
 
         <div class="my-5">
-            {{ include('admin/post/_form.html.twig', {'button_label': 'Modifer'}) }}
+            {{ include('admin/post/_form.html.twig', {'button_label': 'Modifier'}) }}
         </div>
 
     </div>

@@ -67,7 +67,6 @@ class Post
         $this->created_at = new \DateTimeImmutable('now');
         $this->comments = new ArrayCollection();
         $this->images = new ArrayCollection();
-        $this->links = new ArrayCollection();
         $this->linkMedia = new ArrayCollection();
     }
 
