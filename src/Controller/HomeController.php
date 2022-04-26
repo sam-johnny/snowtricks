@@ -31,7 +31,7 @@ class HomeController extends AbstractController
         $posts = $this->paginator->paginate(
             $this->repository->findAll(),
             $request->query->getInt('page', 1),
-            10
+            12
         );
 
         $postsCount = count($this->repository->findAll());
