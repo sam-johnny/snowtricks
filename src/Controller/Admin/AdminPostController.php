@@ -64,7 +64,6 @@ class AdminPostController extends AbstractController
             'form' => $form->createView(),
             'current_page' => 'formPost'
         ]);
-
     }
 
     #[Route('/{id}', name: 'app_admin_post_delete', methods: ['POST'])]
@@ -79,7 +78,5 @@ class AdminPostController extends AbstractController
             $this->addFlash('success', 'L\'article a bien été supprimé avec succès');
         }
         return $this->redirectToRoute('app.home');
-
     }
-
 }
