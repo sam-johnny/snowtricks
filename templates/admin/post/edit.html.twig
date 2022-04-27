@@ -3,7 +3,6 @@
 {% block title %} {{ post.title }} {% endblock %}
 
 {% block body %}
-
     {# Bannière #}
     <div class="position-relative mb-4"
 
@@ -69,11 +68,9 @@
                 {% endif %}
             </div>
         {% endfor %}
-
     </div>
 
     <div class="container my-3">
-
         {# Information sur l'article #}
         <div class="d-flex justify-content-center font-weight-light mb-3">
 
@@ -93,9 +90,7 @@
         <div class="my-5">
             {{ include('admin/post/_form.html.twig', {'button_label': 'Modifier'}) }}
         </div>
-
     </div>
-
 {% endblock %}
 
 

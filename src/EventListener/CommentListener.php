@@ -38,7 +38,5 @@ class CommentListener
             $entity->setUser($user);
         }
     }
-
-
 }
 

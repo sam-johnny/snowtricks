@@ -56,5 +56,4 @@ class LinkMedia
             preg_match($regex, $this->getUrl(), $matches);
             return $matches[1];
     }
-
 }

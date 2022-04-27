@@ -39,7 +39,5 @@ class PostPrePersistListener
             $entity->setUser($user);
         }
     }
-
-
 }
 
