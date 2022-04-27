@@ -23,5 +23,4 @@ class LinkMediaUrlHelper
     {
         return $linkMedia->getPost()->getSlug();
     }
-
 }

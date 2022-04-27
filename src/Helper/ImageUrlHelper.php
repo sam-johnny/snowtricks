@@ -23,5 +23,4 @@ use App\Entity\Image;
     {
         return $image->getPost()->getSlug();
     }
-
 }

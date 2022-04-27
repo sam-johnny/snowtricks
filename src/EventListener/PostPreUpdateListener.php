@@ -7,7 +7,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 
 class PostPreUpdateListener
 {
-    public function PreUpdate(PreUpdateEventArgs $args)
+    public function preUpdate(PreUpdateEventArgs $args)
     {
         $entity = $args->getEntity();
 

@@ -23,5 +23,4 @@ class ImageBannerUrlHelper
     {
         return $entity->getPost()->getSlug();
     }
-
 }
