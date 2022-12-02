@@ -8,11 +8,12 @@
         "ext-ctype": "*",
         "ext-iconv": "*",
         "cocur/slugify": "^4.1",
+        "dama/doctrine-test-bundle": "^7.1",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.5",
-        "doctrine/doctrine-fixtures-bundle": "^3.4",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.11",
+        "fakerphp/faker": "^1.20",
         "knplabs/knp-paginator-bundle": "^5.8",
         "liip/imagine-bundle": "^2.7",
         "phpdocumentor/reflection-docblock": "^5.3",
@@ -21,6 +22,7 @@
         "symfony/apache-pack": "^1.0",
         "symfony/asset": "6.0.*",
         "symfony/console": "6.0.*",
+        "symfony/doctrine-messenger": "6.0.*",
         "symfony/dotenv": "6.0.*",
         "symfony/expression-language": "6.0.*",
         "symfony/flex": "^1.17|^2",
@@ -29,6 +31,7 @@
         "symfony/http-client": "6.0.*",
         "symfony/intl": "6.0.*",
         "symfony/mailer": "6.0.*",
+        "symfony/messenger": "6.0.*",
         "symfony/mime": "6.0.*",
         "symfony/monolog-bundle": "3.7.1",
         "symfony/notifier": "6.0.*",
@@ -42,6 +45,7 @@
         "symfony/string": "6.0.*",
         "symfony/translation": "6.0.*",
         "symfony/twig-bundle": "6.0.*",
+        "symfony/uid": "6.0.*",
         "symfony/validator": "6.0.*",
         "symfony/web-link": "6.0.*",
         "symfony/yaml": "6.0.*",
@@ -51,11 +55,14 @@
         "vich/uploader-bundle": "^1.19"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "phpstan/phpstan-symfony": "^1.2",
         "phpunit/phpunit": "^9.5",
+        "squizlabs/php_codesniffer": "*",
         "symfony/browser-kit": "6.0.*",
         "symfony/css-selector": "6.0.*",
         "symfony/debug-bundle": "6.0.*",
-        "symfony/maker-bundle": "^1.0",
+        "symfony/maker-bundle": "^1.47",
         "symfony/phpunit-bridge": "^6.0",
         "symfony/stopwatch": "6.0.*",
         "symfony/web-profiler-bundle": "6.0.*"
@@ -88,6 +95,19 @@
         "symfony/polyfill-php72": "*"
     },
     "scripts": {
+        "prepare": [
+            "php bin/console doctrine:database:drop -f",
+            "php bin/console doctrine:database:create",
+            "php bin/console doctrine:schema:update -f",
+            "php bin/console doctrine:fixtures:load -n"
+        ],
+        "test": [
+            "php bin/console doctrine:database:drop -f --env=test",
+            "php bin/console doctrine:database:create --env=test",
+            "php bin/console doctrine:schema:update -f --env=test",
+            "php bin/console doctrine:fixtures:load -n --env=test",
+            "php bin/phpunit"
+        ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
             "assets:install %PUBLIC_DIR%": "symfony-cmd"

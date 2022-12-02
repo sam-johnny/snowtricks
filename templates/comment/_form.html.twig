@@ -5,10 +5,13 @@
 {% endfor %}
 
 {{ form_start(form) }}
-<div class="d-flex mt-4 mb-4">
-        <img class="img-fluid img-responsive rounded-circle mr-2"
-             src="{{ asset('images/avatar.png') }}" width="38" alt="">
-        {{ form_widget(form.content) }}
-        <button class="btn btn-outline-dark">{{ button|default('Commenter') }}</button>
+<div class="d-flex mt-4">
+    <img class="img-fluid img-responsive rounded-circle mr-2"
+         src="{{ asset('images/avatar.png') }}" width="38" alt="">
+    {{ form_widget(form.content) }}
+    <button class="btn btn-outline-dark">{{ button|default('Commenter') }}</button>
 </div>
+{{ form_errors(form.content) }}
+
+
 {{ form_end(form) }}

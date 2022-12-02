@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -17,7 +18,7 @@ class Comment
     private ?string $content = null;
 
     #[ORM\Column(type: 'datetime')]
-    private \DateTime $created_at;
+    private DateTime $created_at;
 
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -25,11 +26,11 @@ class Comment
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private ?User $user;
 
     public function __construct()
     {
-        $this->created_at = new \DateTime();
+        $this->created_at = new DateTime();
     }
 
     public function getId(): ?int
@@ -42,7 +43,7 @@ class Comment
         return $this->content;
     }
 
-    public function setContent(string $content): self
+    public function setContent(?string $content): self
     {
         $this->content = $content;
 
@@ -54,11 +55,12 @@ class Comment
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeInterface $created_at): self
+    /**
+     * @param DateTime $created_at
+     */
+    public function setCreatedAt(DateTime $created_at): void
     {
         $this->created_at = $created_at;
-
-        return $this;
     }
 
     public function getPost(): ?Post

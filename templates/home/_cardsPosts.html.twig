@@ -1,4 +1,4 @@
-<div class="card h-100">
+<article class="card h-100">
 
     {# card: image #}
     <img src="{% if post.imageBanner %} {{ vich_uploader_asset(post.imageBanner)|imagine_filter('my_thumb') }} {% else %} {{ asset('images/header/snowboard.jpg')|imagine_filter('my_thumb')  }} {% endif %}"
@@ -40,4 +40,4 @@
                 : {{ post.updatedAt| date('d-m-Y') }}</small>
         </div>
     {% endif %}
-</div>
+</article>

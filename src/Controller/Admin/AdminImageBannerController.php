@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\ImageBanner;
 use App\Form\ImageBannerType;
-use App\Helper\ImageBannerUrlHelper;
+use App\Handler\Form\ImageBannerHandler;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,49 +15,41 @@ use Symfony\Component\Routing\Annotation\Route;
 class AdminImageBannerController extends AbstractController
 {
     #[Route('/{id}/edit', name: 'app_image_banner_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request                $request,
-        ImageBanner            $imageBanner,
-        ImageBannerUrlHelper $bannerUrlHelper,
-        EntityManagerInterface $entityManager
-    ): Response
+    public function edit(Request $request, ImageBanner $imageBanner, ImageBannerHandler $imageBannerHandler): Response
     {
-        $postId = $bannerUrlHelper->idHelper($imageBanner);
-        $postSlug = $bannerUrlHelper->slugHelper($imageBanner);
-
-        $form = $this->createForm(ImageBannerType::class, $imageBanner);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageBanner->setImageFilename($imageBanner->getImageFile());
-            $entityManager->flush();
+        if ($imageBannerHandler->handle($request, $imageBanner)) {
             $this->addFlash('success', 'L\'image a bien été modifiée avec succès');
-            return $this->redirectToRoute('tricks.show', ['slug' => $postSlug, 'id' => $postId]);
+            return $this->redirectToRoute(
+                'tricks.show',
+                $this->getParameters($imageBanner)
+            );
         }
 
-        return $this->renderForm('admin/image_banner/edit.html.twig', [
-            'image_banner' => $imageBanner,
-            'form' => $form,
-        ]);
+        return $this->renderForm(
+            'admin/image_banner/edit.html.twig',
+            [
+                'image_banner' => $imageBanner,
+                'form' => $imageBannerHandler->getForm()]
+        );
     }
 
     #[Route('/{id}', name: 'app_image_banner_delete', methods: ['POST'])]
-    public function delete(
-        Request                $request,
-        ImageBanner            $imageBanner,
-        ImageBannerUrlHelper $imageBannerUrlHelper,
-        EntityManagerInterface $entityManager
-    ): Response
+    public function delete(Request $request, ImageBanner $imageBanner, EntityManagerInterface $entityManager): Response
     {
-        $postId = $imageBannerUrlHelper->idHelper($imageBanner);
-        $postSlug = $imageBannerUrlHelper->slugHelper($imageBanner);
-
         if ($this->isCsrfTokenValid('delete' . $imageBanner->getId(), $request->request->get('_token'))) {
             $entityManager->remove($imageBanner);
             $entityManager->flush();
             $this->addFlash('success', 'L\'image a bien été supprimée avec succès');
         }
 
-        return $this->redirectToRoute('tricks.show', ['slug' => $postSlug, 'id' => $postId]);
+        return $this->redirectToRoute(
+            'tricks.show',
+            $this->getParameters($imageBanner)
+        );
+    }
+
+    private function getParameters(ImageBanner $imageBanner): array
+    {
+        return ['slug' => $imageBanner->getPost()->getSlug(), 'id' => $imageBanner->getPost()->getId()];
     }
 }

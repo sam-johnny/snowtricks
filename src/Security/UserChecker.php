@@ -11,18 +11,12 @@ class UserChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $user)
     {
-        if (!$user instanceof User) {
-            return;
-        }
+        return;
     }
 
     public function checkPostAuth(UserInterface $user)
     {
-        if (!$user instanceof User) {
-            return;
-        }
-
-        if (!$user->getIsVerified()) {
+        if ($user instanceof User && !$user->getIsVerified()) {
             throw new CustomUserMessageAccountStatusException("Votre compte n'est pas actif, veuillez consulter vos e-mails pour l'activer avant le 
             {$user->getAccountMustBeVerifiedBefore()->format('d/m/Y à H\hi')}");
         }

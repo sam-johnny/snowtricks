@@ -11,22 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
-    private PostRepository $repository;
-    private PaginatorInterface $paginator;
 
-    public function __construct(
-        PostRepository     $repository,
-        PaginatorInterface $paginator
-    )
+    public function __construct(private PostRepository $repository, private PaginatorInterface $paginator)
     {
-        $this->repository = $repository;
-        $this->paginator = $paginator;
     }
 
     #[Route('/', name: 'app.home')]
-    public function index(
-        Request $request
-    ): Response
+    public function index(Request $request): Response
     {
         $posts = $this->paginator->paginate(
             $this->repository->findAll(),
@@ -34,12 +25,10 @@ class HomeController extends AbstractController
             12
         );
 
-        $postsCount = count($this->repository->findAll());
-
         return $this->render('home/index.html.twig', [
             'current_menu' => 'home',
             'posts' => $posts,
-            'postsCount' => $postsCount
+            'postsCount' => $posts->count()
         ]);
     }
 

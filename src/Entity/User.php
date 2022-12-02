@@ -11,17 +11,14 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @UniqueEntity(fields={"email"}, message="L'email est déjà utilisé")
- */
-
+#[UniqueEntity('email', message: "L'email est déjà utilisé")]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
     #[Assert\Length(min: 3, max: 255)]
@@ -41,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    private $registered_at;
+    private \DateTimeImmutable $registered_at;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $accountMustBeVerifiedBefore;
@@ -68,10 +65,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $forgotPasswordTokenVerified_at;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Comment::class, orphanRemoval: true)]
-    private $comments;
+    private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Post::class, orphanRemoval: true)]
-    private $posts;
+    private Collection $posts;
 
     public function __construct()
     {

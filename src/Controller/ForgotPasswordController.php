@@ -5,81 +5,45 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\ForgotPasswordType;
 use App\Form\ResetPasswordType;
+use App\Handler\Form\ForgotPasswordHandler;
+use App\Handler\Message\UserNotificationForgotPasswordMessage;
 use App\Repository\UserRepository;
-use App\Service\SendEmail;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class ForgotPasswordController extends AbstractController
 {
-    private EntityManagerInterface $entityManager;
-    private UserRepository $userRepository;
-
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        UserRepository         $userRepository)
+    public function __construct(private EntityManagerInterface $entityManager, private UserRepository $userRepository)
     {
-        $this->entityManager = $entityManager;
-        $this->userRepository = $userRepository;
     }
 
-
     #[Route('/forgot-password', name: 'forgot_password', methods: ['GET', 'POST'])]
-    public function sendRecoveryLink(
-        Request                 $request,
-        SendEmail               $sendEmail,
-        TokenGeneratorInterface $tokenGenerator
-    ): Response
+    public function sendRecoveryLink(Request $request, ForgotPasswordHandler $forgotPasswordHandler,): Response
     {
-        $form = $this->createForm(ForgotPasswordType::class);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user = $this->userRepository->findOneBy(['email' => $form['email']->getData()]);
-
-            /* We make a lure */
-            if (!$user) {
-                $this->addFlash('success', 'Un email vous a été envoyé pour redéfinir votre mot de passe.');
-
-                return $this->redirectToRoute('login');
-            }
-
-            $user->setForgotPasswordToken($tokenGenerator->generateToken())
-                ->setForgotPasswordTokenRequestedAt(new \DateTimeImmutable('now'))
-                ->setForgotPasswordTokenMustBeVerifiedBefore(new \DateTimeImmutable('+15 minutes'));
-
-            $this->entityManager->flush();
-
-            $sendEmail->send([
-                'recipient_email' => $user->getEmail(),
-                'subject' => 'Modification de votre mot de passe',
-                'html_template' => 'forgot_password/forgot_password_email.html.twig',
-                'context' => [
-                    'user' => $user
-                ]
-            ]);
-
+        if ($forgotPasswordHandler->handle($request, null)) {
             $this->addFlash('success', 'Un email vous a été envoyé pour redéfinir votre mot de passe.');
-
             return $this->redirectToRoute('login');
         }
+
         return $this->render('forgot_password/forgot_password_step_1.html.twig', [
-            'forgotPasswordFormStep1' => $form->createView(),
+            'forgotPasswordFormStep1' => $forgotPasswordHandler->createView(),
         ]);
     }
 
     #[Route('/forgot-password/{id}/{token}', name: 'app_retrieve_credentials', methods: ['GET'])]
     public function retrieveCredentialsFromTheURL(
-        string $token,
-        User   $user,
+        string           $token,
+        User             $user,
         SessionInterface $session
     ): RedirectResponse
     {
@@ -94,7 +58,7 @@ class ForgotPasswordController extends AbstractController
     public function resetPassword(
         Request                     $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        SessionInterface $session
+        SessionInterface            $session
     ): Response
     {
         [
@@ -108,10 +72,11 @@ class ForgotPasswordController extends AbstractController
             return $this->redirectToRoute('login');
         }
 
-        /** @var \DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore */
+        /** @var DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore */
         $forgotPasswordTokenMustBeVerifiedBefore = $user->getForgotPasswordTokenMustBeVerifiedBefore();
 
-        if (($user->getForgotPasswordToken()) === null || ($user->getForgotPasswordToken() !== $token) || ($this->isNotRequestedInTime($forgotPasswordTokenMustBeVerifiedBefore))) {
+        if (($user->getForgotPasswordToken()) === null || ($user->getForgotPasswordToken() !== $token) ||
+            ($this->isNotRequestedInTime($forgotPasswordTokenMustBeVerifiedBefore))) {
             return $this->redirectToRoute('app_reset_password');
         }
 
@@ -124,7 +89,7 @@ class ForgotPasswordController extends AbstractController
 
             /* We clear the token to make it unusable. */
             $user->setForgotPasswordToken(null)
-                ->setForgotPasswordTokenVerifiedAt(new \DateTimeImmutable('now'));
+                ->setForgotPasswordTokenVerifiedAt(new DateTimeImmutable('now'));
 
             $this->entityManager->flush();
 
@@ -159,12 +124,12 @@ class ForgotPasswordController extends AbstractController
     /**
      * Validates or not the fact that the link was clicked in the alloted time.
      *
-     * @param \DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore
+     * @param DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore
      * @return bool
      */
-    private function isNotRequestedInTime(\DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore): bool
+    private function isNotRequestedInTime(DateTimeImmutable $forgotPasswordTokenMustBeVerifiedBefore): bool
     {
-        return (new \DateTimeImmutable('now') > $forgotPasswordTokenMustBeVerifiedBefore);
+        return (new DateTimeImmutable('now') > $forgotPasswordTokenMustBeVerifiedBefore);
     }
 
     /**
@@ -188,8 +153,7 @@ class ForgotPasswordController extends AbstractController
      */
     private function passwordMustBeModifiedBefore(User $user): string
     {
-
-        /** @var \DateTimeImmutable $passwordMustBeModifiedBefore */
+        /** @var DateTimeImmutable $passwordMustBeModifiedBefore */
         $passwordMustBeModifiedBefore = $user->getForgotPasswordTokenMustBeVerifiedBefore();
 
         return $passwordMustBeModifiedBefore->format('H\hi');

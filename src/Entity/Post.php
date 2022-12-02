@@ -21,15 +21,13 @@ class Post
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[Assert\Length(min: 3, max: 255)]
-    #[Assert\NotBlank]
     #[ORM\Column(type: 'string', length: 255)]
-    private ?string $title = null;
+    private string $title;
 
     #[Assert\Length(min: 5)]
     #[Assert\NotBlank]
     #[ORM\Column(type: 'text')]
-    private ?string $content = null;
+    private string $content;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private \DateTimeImmutable $created_at;
@@ -38,29 +36,29 @@ class Post
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class, orphanRemoval: true)]
-    private $comments;
+    private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Image::class, cascade: ['persist'], orphanRemoval: true)]
-    private $images;
+    private Collection $images;
 
-    private $imageFiles;
+    private mixed $imageFiles;
 
-    #[ORM\ManyToOne(targetEntity: Categorie::class, inversedBy: 'post')]
+    #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'post')]
     #[ORM\JoinColumn(nullable: false)]
-    private $categorie;
+    private ?Category $category = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
-    private $user;
+    private ?User $user = null;
 
 
     #[ORM\OneToOne(mappedBy: 'post', targetEntity: ImageBanner::class, cascade: ['persist', 'remove'])]
-    private $imageBanner;
+    private ?ImageBanner $imageBanner = null;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: LinkMedia::class, cascade: ['persist'], orphanRemoval: true)]
-    private $linkMedia;
+    private Collection $linkMedia;
 
-    private $urls;
+    private string $urlsMedia;
 
     public function __construct()
     {
@@ -75,7 +73,7 @@ class Post
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -92,7 +90,7 @@ class Post
         return (new Slugify())->slugify($this->title);
     }
 
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -129,7 +127,7 @@ class Post
     }
 
     /**
-     * @return Collection|Comment[]
+     * @return Collection
      */
     public function getComments(): Collection
     {
@@ -158,7 +156,7 @@ class Post
     }
 
     /**
-     * @return Collection|Image[]
+     * @return Collection
      */
     public function getImages(): Collection
     {
@@ -202,15 +200,30 @@ class Post
         return $this;
     }
 
-
-    public function getCategorie(): ?Categorie
+    public function getUrlsMedia(): string
     {
-        return $this->categorie;
+        return $this->urlsMedia;
     }
 
-    public function setCategorie(?Categorie $categorie): self
+    public function setUrlsMedia(string $urlsMedia): self
     {
-        $this->categorie = $categorie;
+            $linkMedia = new LinkMedia();
+            $linkMedia->setUrl($urlsMedia);
+            $this->addLinkMedia($linkMedia);
+
+        $this->urlsMedia = $urlsMedia;
+        return $this;
+    }
+
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): self
+    {
+        $this->category = $category;
 
         return $this;
     }
@@ -244,9 +257,7 @@ class Post
         return $this;
     }
 
-    /**
-     * @return Collection|LinkMedia[]
-     */
+
     public function getLinkMedia(): Collection
     {
         return $this->linkMedia;
@@ -272,31 +283,5 @@ class Post
         }
 
         return $this;
-    }
-
-    public function getUrls(): mixed
-    {
-        return $this->urls;
-    }
-
-    public function setUrls($urls): self
-    {
-        $link = new LinkMedia();
-        $link->setUrl($urls);
-        $this->addLinkMedia($link);
-
-        $this->urls = $urls;
-        return $this;
-    }
-
-    public function getRegLinks(): array
-    {
-        $regex = "/=([\w-]*)/";
-        $regUrl = [];
-        foreach ($this->getLinkMedia() as $linkArray) {
-            preg_match($regex, $linkArray->getUrl(), $matches);
-            $regUrl[] = $matches[1];
-        }
-        return $regUrl;
     }
 }

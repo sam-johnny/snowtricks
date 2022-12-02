@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LinkMediaRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LinkMediaRepository::class)]
 class LinkMedia
@@ -11,14 +12,16 @@ class LinkMedia
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private ?int $id;
+    #[Assert\Unique]
+    private ?int $id = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $url;
+    #[Assert\Url]
+    private ?string $url = null;
 
     #[ORM\ManyToOne(targetEntity: Post::class, inversedBy: 'linkMedia')]
     #[ORM\JoinColumn(nullable: false)]
-    private $post;
+    private ?Post $post = null;
 
 
     public function getId(): ?int
@@ -48,12 +51,5 @@ class LinkMedia
         $this->post = $post;
 
         return $this;
-    }
-
-    public function getRegLink(): string
-    {
-        $regex = "/=([\w-]*)/";
-            preg_match($regex, $this->getUrl(), $matches);
-            return $matches[1];
     }
 }

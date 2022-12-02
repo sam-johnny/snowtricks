@@ -1,4 +1,15 @@
-# P6-SnowTricks
+# SnowTricks V2
+
+Afin d'approfondir mes connaissances, j'ai décidé de reprendre mon projet et d'améliorer mon code.
+
+## Nouveauté
+
+* Mettre les envoie de mail en tâche asynchrone grâce Messenger de symfony
+* Implémentation Voter de symfony
+* Implémentation Event subscriber au lieu de Event listener de doctrine
+* Implémentation des Handler (intance de formulaire depuis le contrôleur)
+* Implémentation des DataTransformer
+* Implémentation des tests fonctionnels (en cours)
 
 Création d'un site communautaire de partage de figures de snowboard via le framework Symfony.
 
